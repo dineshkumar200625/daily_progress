@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buggy-app
+  namespace: observability
+  labels:
+    app: buggy-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: buggy-app
+  template:
+    metadata:
+      labels:
+        app: buggy-app
+    spec:
+      containers:
+      - name: buggy-container
+        image: 518983156889.dkr.ecr.us-east-1.amazonaws.com/buggy-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: buggy-app-service
+  namespace: observability
+spec:
+  selector:
+    app: buggy-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
