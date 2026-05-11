@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environment {
+        NAMESPACE = "observability"
+        APP_NAME = "stable-app"
+    }
+    stages {
+        stage('Analyze Load') {
+            steps {
+                echo "AI Agent detected traffic surge. Scaling resources..."
+            }
+        }
+        stage('Kubernetes Scale') {
+            steps {
+                sh "kubectl scale deployment/${APP_NAME} --replicas=5 -n ${NAMESPACE}"
+            }
+        }
+        stage('Confirm Deployment') {
+            steps {
+                sh "kubectl get pods -l app=${APP_NAME} -n ${NAMESPACE}"
+            }
+        }
+    }
+    post {
+        success {
+            echo "Scaling complete. Resource capacity increased."
+        }
+    }
+}
