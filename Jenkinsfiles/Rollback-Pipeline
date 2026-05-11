@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    environment {
+        NAMESPACE = "observability"
+        APP_NAME = "buggy-app"
+    }
+    stages {
+        stage('Identify Failure') {
+            steps {
+                echo "AI Agent detected high restart rates. Initiating Rollback..."
+            }
+        }
+        stage('Kubernetes Rollback') {
+            steps {
+                sh "kubectl rollout undo deployment/${APP_NAME} -n ${NAMESPACE}"
+            }
+        }
+        stage('Validate Stability') {
+            steps {
+                sh "kubectl rollout status deployment/${APP_NAME} -n ${NAMESPACE}"
+            }
+        }
+    }
+    post {
+        success {
+            echo "Rollback successful. System stabilized."
+        }
+        failure {
+            echo "Rollback failed. Manual intervention required."
+        }
+    }
+}
