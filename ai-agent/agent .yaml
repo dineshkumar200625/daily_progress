@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sre-agent
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: sre-agent
+
+  template:
+    metadata:
+      labels:
+        app: sre-agent
+
+    spec:
+      containers:
+      - name: agent
+        image: 518983156889.dkr.ecr.us-east-1.amazonaws.com/sre-agent:latest
+
+        env:
+        - name: JENKINS_USER
+          value: "admin"
+
+        - name: JENKINS_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sre-agent-secrets
+              key: jenkins-api-token
+
+        - name: AI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sre-agent-secrets
+              key: groq-api-key
