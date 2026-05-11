@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    environment {
+        ECR_REPO = "518983156889.dkr.ecr.us-east-1.amazonaws.com/buggy-app"
+        REGION = "us-east-1"
+        APP_NAME = "buggy-app"
+        NAMESPACE = "observability"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Login to ECR') {
+            steps {
+                sh "aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_REPO}"
+            }
+        }
+        stage('Build Image') {
+            steps {
+                sh "docker build -t ${ECR_REPO}:latest ./buggy-app"
+            }
+        }
+        stage('Push to ECR') {
+            steps {
+                sh "docker push ${ECR_REPO}:latest"
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh "kubectl apply -f buggy-app/deployment.yaml"
+            }
+        }
+    }
+    post {
+        always {
+            sh "docker logout ${ECR_REPO}"
+        }
+    }
+}
