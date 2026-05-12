@@ -2,36 +2,64 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sre-agent
-
+  namespace: observability
+  labels:
+    app: sre-agent
 spec:
   replicas: 1
-
   selector:
     matchLabels:
       app: sre-agent
-
   template:
     metadata:
       labels:
         app: sre-agent
-
     spec:
       containers:
       - name: agent
         image: 518983156889.dkr.ecr.us-east-1.amazonaws.com/sre-agent:latest
-
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
         env:
-        - name: JENKINS_USER
-          value: "admin"
-
-        - name: JENKINS_API_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: sre-agent-secrets
-              key: jenkins-api-token
-
         - name: AI_API_KEY
           valueFrom:
             secretKeyRef:
               name: sre-agent-secrets
               key: groq-api-key
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: sre-agent-secrets
+              key: slack-webhook-url
+        - name: X_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sre-agent-secrets
+              key: x-api-key
+        - name: JENKINS_USER
+          value: "admin"
+        - name: JENKINS_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sre-agent-secrets
+              key: jenkins-api-token
+        - name: PROMETHEUS_URL
+          value: "http://monitoring-stack-kube-prom-prometheus.observability.svc.cluster.local:9090/api/v1/query"
+        - name: JENKINS_SCALE_URL
+          value: "http://a51486d6624644d38939569b038ecd07-1982166605.us-east-1.elb.amazonaws.com:8080/job/Scale-Pipeline/build"
+        - name: JENKINS_ROLLBACK_URL
+          value: "http://a51486d6624644d38939569b038ecd07-1982166605.us-east-1.elb.amazonaws.com:8080/job/Rollback-Pipeline/build"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sre-agent-service
+  namespace: observability
+spec:
+  selector:
+    app: sre-agent
+  ports:
+    - protocol: TCP
+      port: 80
+      target_port: 5000
