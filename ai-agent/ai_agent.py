@@ -6,6 +6,16 @@ import logging
 from flask import Flask, request, jsonify, abort
 from functools import wraps
 
+class BaseRemediationProvider:
+    def execute(self):
+        pass
+
+class JenkinsProvider(BaseRemediationProvider):
+    def __init__(self, url):
+        self.url = url
+    def execute(self):
+        return trigger_remediation(self.url, "Jenkins Job")
+        
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
