@@ -1,11 +1,8 @@
 prometheus:
   prometheusSpec:
-    # Set scrape interval to 15 seconds as per architecture
     scrapeInterval: "15s"
     evaluationInterval: "15s"
     
-    # These will automatically discover cAdvisor metrics from kubelet
-    # and Node Exporter metrics from the DaemonSet
     serviceMonitorSelectorNilUsesHelmValues: false
     podMonitorSelectorNilUsesHelmValues: false
     
@@ -17,12 +14,9 @@ prometheus:
         memory: "1Gi"
         cpu: "500m"
 
-# Grafana configuration
 grafana:
   enabled: true
-  adminPassword: "admin"  # CHANGE THIS in production
-  
-  # Expose Grafana via LoadBalancer or keep ClusterIP (use port-forward)
+  adminPassword: "admin" 
   service:
     type: ClusterIP
     port: 80
@@ -34,11 +28,7 @@ grafana:
     limits:
       memory: "512Mi"
       cpu: "200m"
-
-# Node Exporter - runs as DaemonSet on every node
 nodeExporter:
   enabled: true
-
-# Disable components we don't need for this project
 alertmanager:
   enabled: false
