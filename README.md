@@ -3,7 +3,7 @@
 ## Project Overview
 This project implements an Autonomous Site Reliability Engineering (SRE) Agent deployed on Amazon EKS. The system utilizes Llama 3.3 (via Groq API) to analyze real-time metrics from Prometheus and execute automated remediation via Jenkins pipelines.
 
-## Repository Structur
+## Repository Structure
 - **/terraform**: Infrastructure as Code for VPC, Networking, and EKS Cluster.
 - **/sre-agent**: Python Flask application containing the AI decision logic.
 - **/stable-app**: Baseline application used for stability benchmarking.
