@@ -184,24 +184,3 @@ PROMETHEUS_URL	Yes	Prometheus query endpoint
 SLACK_WEBHOOK_URL	No	Slack notifications webhook
 Contributing
 Open issues for hackathon improvements. Pull requests must pass all unit tests.
-
-License
-MIT
-
-
----
-
-
-| Your Actual Path | README Reference |
-|-----------------|------------------|
-| `infrastructure/terraform.tf` | `cd infrastructure` |
-| `infrastructure/variables.tf` | Listed under infrastructure/ |
-| `infrastructure/outputs.tf` | Listed under infrastructure/ |
-| `agent.yaml` (root) | `kubectl apply -f agent.yaml` |
-| `ai_agent.py` (root) | Main application file |
-| `tests/test_agent.py` | Tests section |
-| `tests/test_api.py` | Tests section |
-| `buggy-python-app/` | CrashLoop test harness |
-| `stable_python_app/` | Baseline benchmark |
-| `observability/` | Prometheus/Grafana configs |
-| `Jenkinsfiles/` | CI/CD pipeline definitions |
