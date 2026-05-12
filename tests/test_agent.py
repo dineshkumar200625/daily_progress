@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from sre_agent.ai_agent import query_prometheus, cooldown_active
+from ai_agent import query_prometheus, cooldown_active
 
 class TestAgentLogic(unittest.TestCase):
     @patch('requests.get')
